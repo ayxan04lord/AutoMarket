@@ -1,72 +1,348 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="az">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>AutoMarket — Giriş</title>
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body>
-    
-    <label for="username">Username</label>
-    <br>
-    <input type="text" id="username">
+<body class="auth-page">
 
-    <br><br>
+<!-- ==================== AUTH ==================== -->
+<div class="auth-container" id="authContainer">
+    <div class="auth-logo">
+        <span class="logo-icon">🚗</span>
+        <span class="logo-text">AutoMarket</span>
+    </div>
+    <div class="auth-tabs">
+        <button class="tab-btn active" onclick="switchTab('login')">Giriş</button>
+        <button class="tab-btn" onclick="switchTab('register')">Qeydiyyat</button>
+    </div>
 
-    <label for="password">Password</label>
-    <br>
-    <input type="text" id="password">
+    <!-- LOGIN -->
+    <div class="auth-form" id="loginForm">
+        <h2>Hesabınıza daxil olun</h2>
+        <p class="form-subtitle">Xoş gəldiniz! Zəhmət olmasa məlumatlarınızı daxil edin.</p>
+        <div class="input-group">
+            <label>İstifadəçi adı</label>
+            <div class="input-wrap">
+                <span class="input-icon">👤</span>
+                <input type="text" id="loginUsername" placeholder="İstifadəçi adı daxil edin">
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Şifrə</label>
+            <div class="input-wrap">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="loginPassword" placeholder="Şifrənizi daxil edin">
+                <button class="eye-btn" onclick="togglePass('loginPassword', this)">👁</button>
+            </div>
+        </div>
+        <p class="error-msg" id="loginError"></p>
+        <button class="submit-btn" onclick="login()"><span>Daxil ol</span><span>→</span></button>
+        <p class="switch-text">Hesabınız yoxdur? <a onclick="switchTab('register')">Qeydiyyatdan keçin</a></p>
+    </div>
 
-    <br><br>
-    <label for="status">Status</label>
-    <br>
-    <select name="" id="status">
-        <option value="">-SELECT-</option>
-        <option value="Active">Active</option>
-        <option value="Deactive">Deactive</option>
-    </select>
+    <!-- REGISTER -->
+    <div class="auth-form hidden" id="registerForm">
+        <h2>Yeni hesab yaradın</h2>
+        <p class="form-subtitle">Qeydiyyatdan keçin və elanları kəşf edin.</p>
+        <div class="input-group">
+            <label>Ad Soyad</label>
+            <div class="input-wrap">
+                <span class="input-icon">✏️</span>
+                <input type="text" id="regName" placeholder="Adınızı daxil edin">
+            </div>
+        </div>
+        <div class="input-group">
+            <label>İstifadəçi adı</label>
+            <div class="input-wrap">
+                <span class="input-icon">👤</span>
+                <input type="text" id="regUsername" placeholder="İstifadəçi adı seçin">
+            </div>
+        </div>
+        <div class="input-group">
+            <label>E-poçt</label>
+            <div class="input-wrap">
+                <span class="input-icon">✉️</span>
+                <input type="email" id="regEmail" placeholder="E-poçt ünvanınız">
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Şifrə</label>
+            <div class="input-wrap">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="regPassword" placeholder="Şifrə yaradın">
+                <button class="eye-btn" onclick="togglePass('regPassword', this)">👁</button>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Şifrəni təsdiqləyin</label>
+            <div class="input-wrap">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="regConfirm" placeholder="Şifrəni təkrar daxil edin">
+                <button class="eye-btn" onclick="togglePass('regConfirm', this)">👁</button>
+            </div>
+        </div>
+        <p class="error-msg" id="registerError"></p>
+        <p class="success-msg" id="registerSuccess"></p>
+        <button class="submit-btn" onclick="register()"><span>Qeydiyyat</span><span>→</span></button>
+        <p class="switch-text">Artıq hesabınız var? <a onclick="switchTab('login')">Daxil olun</a></p>
+    </div>
+</div>
 
-    
-    <br><br>
-    <button onclick="demo()">SEND</button>
+<!-- ==================== SITE ==================== -->
+<div class="site-wrapper hidden" id="siteWrapper">
 
-    <br><br><br>
-    <p id="Error"></p>
+    <!-- HEADER -->
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="header-logo">🚗 AutoMarket</div>
+            <nav class="header-nav">
+                <a href="#" class="nav-link active" onclick="showPage('listings',this)">Elanlar</a>
+                <a href="#" class="nav-link" onclick="showPage('favorites',this)">Seçilmişlər</a>
+                <a href="#" class="nav-link" onclick="showPage('myads',this)">Elanlarım</a>
+            </nav>
+            <div class="header-actions">
+                <button class="add-btn" onclick="openAddModal()">+ Elan əlavə et</button>
+                <div class="user-menu" id="userMenu">
+                    <div class="user-avatar" onclick="toggleUserDropdown()">
+                        <span id="userInitial">A</span>
+                    </div>
+                    <div class="user-dropdown hidden" id="userDropdown">
+                        <p class="dropdown-name" id="dropdownName">İstifadəçi</p>
+                        <a href="#" onclick="openProfile()">👤 Profilim</a>
+                        <a href="#" onclick="showPage('myads',null); toggleUserDropdown()">📋 Elanlarım</a>
+                        <a href="#" onclick="showPage('favorites',null); toggleUserDropdown()">❤️ Seçilmişlər</a>
+                        <hr>
+                        <a href="#" onclick="logout()" class="logout-link">🚪 Çıxış</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
 
+    <!-- PAGE: LISTINGS -->
+    <div id="page-listings">
+        <section class="hero-search">
+            <div class="hero-inner">
+                <h1>Ən yaxşı avtomobili <span>tap</span></h1>
+                <p>Azərbaycanda 15,000+ aktiv elan</p>
+                <div class="search-bar">
+                    <select class="search-select" id="heroMarka">
+                        <option value="">Bütün markalar</option>
+                        <option>BMW</option><option>Mercedes</option><option>Toyota</option>
+                        <option>Hyundai</option><option>Kia</option><option>Tesla</option>
+                        <option>Audi</option><option>Volkswagen</option>
+                    </select>
+                    <select class="search-select" id="heroFuel">
+                        <option value="">Yanacaq növü</option>
+                        <option>Benzin</option><option>Dizel</option>
+                        <option>Hibrid</option><option>Elektrik</option>
+                    </select>
+                    <select class="search-select" id="heroPrice">
+                        <option value="">Qiymət aralığı</option>
+                        <option value="0-10000">0 – 10,000 $</option>
+                        <option value="10000-30000">10,000 – 30,000 $</option>
+                        <option value="30000-60000">30,000 – 60,000 $</option>
+                        <option value="60000-999999">60,000 $+</option>
+                    </select>
+                    <button class="search-btn" onclick="applyHeroSearch()">🔍 Axtar</button>
+                </div>
+            </div>
+        </section>
 
+        <div class="filter-bar">
+            <div class="filter-inner">
+                <div class="filter-tags">
+                    <button class="filter-tag active" data-filter="all"      onclick="setFilter(this,'all')">Hamısı</button>
+                    <button class="filter-tag"        data-filter="new"      onclick="setFilter(this,'new')">✨ Yeni</button>
+                    <button class="filter-tag"        data-filter="used"     onclick="setFilter(this,'used')">İşlənmiş</button>
+                    <button class="filter-tag"        data-filter="hot"      onclick="setFilter(this,'hot')">🔥 Populyar</button>
+                    <button class="filter-tag"        data-filter="Dizel"    onclick="setFilter(this,'Dizel')">Dizel</button>
+                    <button class="filter-tag"        data-filter="Benzin"   onclick="setFilter(this,'Benzin')">Benzin</button>
+                    <button class="filter-tag"        data-filter="Elektrik" onclick="setFilter(this,'Elektrik')">⚡ Elektrik</button>
+                    <button class="filter-tag"        data-filter="Hibrid"   onclick="setFilter(this,'Hibrid')">🍃 Hibrid</button>
+                </div>
+                <div class="sort-wrap">
+                    <select class="sort-select" id="sortSelect" onchange="applySort()">
+                        <option value="newest">Ən yeni əvvəl</option>
+                        <option value="price-asc">Qiymət: Aşağıdan yuxarı</option>
+                        <option value="price-desc">Qiymət: Yuxarıdan aşağı</option>
+                        <option value="year-desc">İl: Yeni əvvəl</option>
+                        <option value="year-asc">İl: Köhnə əvvəl</option>
+                    </select>
+                </div>
+            </div>
+        </div>
 
+        <main class="cards-section">
+            <div class="section-header">
+                <h2>Son elanlar</h2>
+                <span class="results-count" id="resultsCount">0 nəticə</span>
+            </div>
+            <div class="cards-grid" id="cardsGrid"></div>
+            <div class="empty-state hidden" id="emptyState">
+                <div class="empty-icon">🔍</div>
+                <p>Heç bir elan tapılmadı.</p>
+                <button onclick="resetFilters()">Filterləri sıfırla</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- PAGE: FAVORITES -->
+    <div id="page-favorites" class="hidden">
+        <main class="cards-section">
+            <div class="section-header">
+                <h2>❤️ Seçilmişlər</h2>
+                <span class="results-count" id="favCount">0 elan</span>
+            </div>
+            <div class="cards-grid" id="favGrid"></div>
+            <div class="empty-state hidden" id="favEmpty">
+                <div class="empty-icon">💔</div>
+                <p>Seçilmiş elan yoxdur.</p>
+                <button onclick="showPage('listings',null)">Elanlara bax</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- PAGE: MY ADS -->
+    <div id="page-myads" class="hidden">
+        <main class="cards-section">
+            <div class="section-header">
+                <h2>📋 Elanlarım</h2>
+                <button class="add-btn" onclick="openAddModal()">+ Yeni elan</button>
+            </div>
+            <div class="cards-grid" id="myAdsGrid"></div>
+            <div class="empty-state hidden" id="myAdsEmpty">
+                <div class="empty-icon">📭</div>
+                <p>Hələ heç bir elan yerləşdirməmisiniz.</p>
+                <button onclick="openAddModal()">İlk elanı əlavə et</button>
+            </div>
+        </main>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-logo">🚗 AutoMarket</div>
+            <p>© 2025 AutoMarket. Bütün hüquqlar qorunur.</p>
+        </div>
+    </footer>
+</div>
+
+<!-- CAR DETAIL MODAL -->
+<div class="modal-overlay hidden" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal-card" id="modalCard"></div>
+</div>
+
+<!-- ADD CAR MODAL -->
+<div class="modal-overlay hidden" id="addModalOverlay" onclick="closeAddModal(event)">
+    <div class="modal-card add-modal-card" id="addModalCard">
+        <button class="modal-close" onclick="document.getElementById('addModalOverlay').classList.add('hidden')">✕</button>
+        <div class="modal-body">
+            <h2 style="margin-bottom:6px">🚗 Yeni elan əlavə et</h2>
+            <p style="color:var(--text-muted);font-size:13px;margin-bottom:22px">Avtomobiliniz haqqında məlumat daxil edin</p>
+            <div class="add-form-grid">
+                <div class="input-group"><label>Marka *</label><div class="input-wrap"><input type="text" id="addMarka" placeholder="məs. BMW, Toyota"></div></div>
+                <div class="input-group"><label>Model *</label><div class="input-wrap"><input type="text" id="addModel" placeholder="məs. 5 Series, RAV4"></div></div>
+                <div class="input-group"><label>İl *</label><div class="input-wrap"><input type="number" id="addYear" placeholder="məs. 2021" min="1990" max="2025"></div></div>
+                <div class="input-group"><label>Yürüş (km) *</label><div class="input-wrap"><input type="number" id="addKm" placeholder="məs. 45000" min="0"></div></div>
+                <div class="input-group"><label>Yanacaq *</label><div class="input-wrap"><select id="addFuel" class="form-select"><option value="">Seçin</option><option>Benzin</option><option>Dizel</option><option>Hibrid</option><option>Elektrik</option></select></div></div>
+                <div class="input-group"><label>Ötürücü *</label><div class="input-wrap"><select id="addTrans" class="form-select"><option value="">Seçin</option><option>Avtomat</option><option>Mexaniki</option><option>Variator</option></select></div></div>
+                <div class="input-group"><label>Rəng</label><div class="input-wrap"><input type="text" id="addColor" placeholder="məs. Qara, Ağ"></div></div>
+                <div class="input-group"><label>Mühərrik</label><div class="input-wrap"><input type="text" id="addEngine" placeholder="məs. 2.0L Turbo"></div></div>
+                <div class="input-group"><label>Qiymət ($) *</label><div class="input-wrap"><input type="number" id="addPrice" placeholder="məs. 25000" min="0"></div></div>
+                <div class="input-group"><label>Şəhər *</label><div class="input-wrap"><select id="addCity" class="form-select"><option value="">Seçin</option><option>Bakı</option><option>Gəncə</option><option>Sumqayıt</option><option>Lənkəran</option><option>Şirvan</option><option>Naxçıvan</option></select></div></div>
+                <div class="input-group"><label>Şəkil URL (opsional)</label><div class="input-wrap"><input type="text" id="addImg" placeholder="https://..."></div></div>
+                <div class="input-group"><label>Vəziyyət *</label><div class="input-wrap"><select id="addBadge" class="form-select"><option value="">Seçin</option><option value="new">✨ Yeni</option><option value="used">İşlənmiş</option><option value="hot">🔥 Populyar</option></select></div></div>
+            </div>
+            <div class="input-group" style="margin-top:4px">
+                <label>Açıqlama</label>
+                <textarea id="addDesc" rows="3" placeholder="Avtomobil haqqında ətraflı məlumat..." class="form-textarea"></textarea>
+            </div>
+            <p class="error-msg" id="addError"></p>
+            <button class="submit-btn" onclick="submitAd()" style="margin-top:8px"><span>Elanı yerləşdir</span><span>→</span></button>
+        </div>
+    </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="modal-overlay hidden" id="profileOverlay" onclick="closeProfileModal(event)">
+    <div class="modal-card profile-modal" id="profileCard">
+        <button class="modal-close" onclick="document.getElementById('profileOverlay').classList.add('hidden')">✕</button>
+        <div class="modal-body">
+            <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatar">A</div>
+                <div>
+                    <h2 id="profileName">İstifadəçi</h2>
+                    <p id="profileUsername" style="color:var(--text-muted);font-size:13px"></p>
+                </div>
+            </div>
+            <div class="profile-tabs">
+                <button class="ptab active" onclick="switchProfileTab('info',this)">Məlumatlar</button>
+                <button class="ptab" onclick="switchProfileTab('password',this)">Şifrə</button>
+                <button class="ptab" onclick="switchProfileTab('stats',this)">Statistika</button>
+            </div>
+
+            <div id="ptab-info">
+                <div class="input-group" style="margin-top:18px">
+                    <label>Ad Soyad</label>
+                    <div class="input-wrap"><input type="text" id="profileEditName" placeholder="Adınızı daxil edin"></div>
+                </div>
+                <div class="input-group">
+                    <label>E-poçt</label>
+                    <div class="input-wrap"><input type="email" id="profileEditEmail" placeholder="E-poçt ünvanınız"></div>
+                </div>
+                <div class="input-group">
+                    <label>Telefon</label>
+                    <div class="input-wrap"><input type="tel" id="profileEditPhone" placeholder="+994 XX XXX XX XX"></div>
+                </div>
+                <div class="input-group">
+                    <label>Şəhər</label>
+                    <div class="input-wrap"><select id="profileEditCity" class="form-select"><option value="">Seçin</option><option>Bakı</option><option>Gəncə</option><option>Sumqayıt</option><option>Lənkəran</option><option>Şirvan</option><option>Naxçıvan</option></select></div>
+                </div>
+                <p class="error-msg" id="profileError"></p>
+                <p class="success-msg" id="profileSuccess"></p>
+                <button class="submit-btn" onclick="saveProfile()"><span>Yadda saxla</span><span>✓</span></button>
+            </div>
+
+            <div id="ptab-password" class="hidden">
+                <div class="input-group" style="margin-top:18px">
+                    <label>Cari şifrə</label>
+                    <div class="input-wrap"><span class="input-icon">🔒</span><input type="password" id="currentPass" placeholder="Cari şifrəniz"><button class="eye-btn" onclick="togglePass('currentPass',this)">👁</button></div>
+                </div>
+                <div class="input-group">
+                    <label>Yeni şifrə</label>
+                    <div class="input-wrap"><span class="input-icon">🔑</span><input type="password" id="newPass" placeholder="Yeni şifrə (min. 6 simvol)"><button class="eye-btn" onclick="togglePass('newPass',this)">👁</button></div>
+                </div>
+                <div class="input-group">
+                    <label>Yeni şifrəni təsdiqlə</label>
+                    <div class="input-wrap"><span class="input-icon">🔑</span><input type="password" id="confirmNewPass" placeholder="Yeni şifrəni təkrar daxil edin"><button class="eye-btn" onclick="togglePass('confirmNewPass',this)">👁</button></div>
+                </div>
+                <p class="error-msg" id="passError"></p>
+                <p class="success-msg" id="passSuccess"></p>
+                <button class="submit-btn" onclick="changePassword()"><span>Şifrəni dəyiş</span><span>✓</span></button>
+            </div>
+
+            <div id="ptab-stats" class="hidden">
+                <div class="stats-grid" style="margin-top:18px">
+                    <div class="stat-card"><div class="stat-num" id="statAds">0</div><div class="stat-label">Elanlarım</div></div>
+                    <div class="stat-card"><div class="stat-num" id="statFavs">0</div><div class="stat-label">Seçilmişlər</div></div>
+                    <div class="stat-card"><div class="stat-num" id="statViews">—</div><div class="stat-label">Baxışlar</div></div>
+                </div>
+                <div style="margin-top:16px;padding:16px;background:var(--bg-dark);border-radius:10px;border:1px solid var(--border)">
+                    <p style="font-size:13px;color:var(--text-muted);line-height:2">
+                        👤 Qeydiyyat tarixi: <strong id="statJoined" style="color:var(--text-main)">—</strong><br>
+                        📧 E-poçt: <strong id="statEmail" style="color:var(--text-main)">—</strong><br>
+                        📞 Telefon: <strong id="statPhone" style="color:var(--text-main)">—</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/app.js"></script>
 </body>
 </html>
-
-
-<script>
-    function demo(){
-        let username = document.getElementById("username").value
-        let password = document.getElementById("password").value
-        let status   = document.getElementById("status").value
-        let Error   = document.getElementById("Error")
-
-        
-        let db_password = "123"
-        let db_status = "Active"
-
-        if(username === "Admin" && password === db_password  || status == db_status){
-            window.location.href = "http://www.w3schools.com";
-        }else{
-            Error.innerHTML = "Error"
-        }
-    }
-</script>
-
-
-
-
-
-<!-- 1) funksiyanin yaradilmasi
-2) inputlarin valuelerinin getirilmesi
-3) sertlerin verilmesi -->
-
-
-
